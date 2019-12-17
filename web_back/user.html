@@ -119,11 +119,41 @@
                 processData: false,
                 success: function (res) {
                     if (res.code === 200) {
+                        // 让当前user.html的ifarme所在的index.html跳转到login.html
+                        // window.parent用来获取页面的window对象,也就是index.html页面的window
+                        // window.location.parent.href='./login.html'当前小窗口的跳转
                         parent.location.href = './login.html'
                     }
                 }
             });
         })
+
+
+        // 图片本地预览
+        // 使用change事件监测用户的文件选择操作
+        // 通过url.createObjjectURL(进行本地图片斗志获取)
+        //     url是window对象的属性
+        //     用户在本地选择的图片地址是我们不可能提前知道的
+        //     使用方式
+        //     URL.createObjectURL(文件域的files的文件信息)
+        //     返回值是浏览器自动生成的临时图片的地址
+
+
+        // 1.给文件域设置change事件
+        $('#user_pic').on('change', function () {
+            // console.log($(this)[0].files[0]);
+            // console.log(URL.createObjectURL($(this)[0].files[0]));
+
+            var tempsrc = URL.createObjectURL($(this)[0].files[0]);
+            $('#avatar').prop('src', tempsrc)
+        })
+
+
+
+
+
+
+
     </script>
 
 </body>
