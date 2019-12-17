@@ -42,7 +42,7 @@ var user = {
             url: GET_USER,
             success: function (res) {
                 if (res.code == 200) {
-                    options.success(res.data)
+                    options.success(res.data);
                 }
             }
         })

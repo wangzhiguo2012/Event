@@ -72,7 +72,8 @@
                 <tfoot>
                     <tr>
                         <td colspan="3" class="text-center">
-                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#addModal">新增分类</a>
+                            <a href="#" class="btn btn-success" data-toggle="modal" data-target="#addModal"
+                                id="addCate">新增分类</a>
                         </td>
                     </tr>
                 </tfoot>
@@ -90,7 +91,7 @@
                 <div class="modal-body">
                     <form>
                         <!-- 设置隐藏域 -->
-                        <input type="hidden" name="hidden" name="id">
+                        <input type="hidden" id="hidden" name="id">
                         <div class="form-group">
                             <label for="recipient-name" class="control-label">分类名称:</label>
                             <input type="text" class="form-control" id="name" name="name">
@@ -104,7 +105,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" id="modal_shutoff">关闭</button>
                     <button type="button" class="btn btn-primary" id="modal_add">新增</button>
-                    <!-- <button type="button" class="btn btn-primary" display id="modal_adit">提交编辑</button> -->
+                    <button type="button" class="btn btn-primary" style="display: none;" id="modal_edit">提交编辑</button>
                 </div>
             </div>
         </div>
@@ -149,9 +150,18 @@
     2.分类数据新增功能
         点击新增按钮进行检测
         填写完毕，发送请求
-        
+        新增成功后调用location。reload（）刷新页面（ifarme中的小区域）
       3.分类数据编辑功能
+      编辑和新增使用的是一个模态框
+      设置一个提交编辑的按钮，用来编辑操作
+      进行操作效果处理，点击新增，将提交编辑按钮隐藏，点击编辑，把新增按钮隐藏
+      点击编辑按钮时，需要获取到数据的id
+      可以在创建表格的时候添加data-id的属性   为了方便获取编辑按钮添加了edit del类名
+      在模态框中设置隐藏，用来保存编辑的id
+      点击提交按钮，检测内容并发送请求
       4.分类数据删除功能 -->
+    <!-- 点击删除按钮，获取data-id
+      将data-id发送给给接口进行删除 -->
     <script src="./js/template-web.js"></script>
     <script src="./tools/article.js"></script>
     <script src="./tools/config.js"></script>
@@ -161,9 +171,8 @@
         <td>{{val.name}}</td>
         <td>{{val.slug}}</td>
         <td class="text-center">
-            <a href="javascript:editTr({&quot;id&quot;:&quot;1&quot;,&quot;slug&quot;:&quot;uncategorized&quot;,&quot;name&quot;:&quot;未分类&quot;});"
-                class="btn btn-info btn-xs">编辑</a>
-            <a href="javascript:deleteTr( 1 );" class="btn btn-danger btn-xs">删除</a>
+            <a href="javascript:;" data-id="{{val.id}}" class="btn btn-info btn-xs edit">编辑</a>
+            <a href="javascript:;" data-id="{{val.id}}" class="btn btn-danger btn-xs del">删除</a>
         </td>
     </tr>
     {{/each}}
@@ -195,23 +204,75 @@
         })
 
 
+
         // 设置关闭按钮
-        $('#model_shutoff').on('click', function () {
+        $('#modal_shutoff').on('click', function () {
             $('form')[0].reset();
             $('#addModal').modal('hide')
         });
+
+
         // 分类数据编辑功能
         // 新增分类按钮点击(设置模态框的提交编辑按钮隐藏，新增按钮显示)
         $('#addCate').on('click', function () {
-            $('modal-add').show();
+            $('#modal_add').show();
             $('#modal_edit').hide();
         });
         // 2.编辑按钮点击(设置模态框的提交编辑按钮显示，新增按钮隐藏)
-        $('#tbody').on('click', function () {
+        $('#tbody').on('click', '.edit', function () {
+            // 先显示模态框再进行按钮操作
             $('#addModal').modal('show')
-            $('modal-add').hide();
+            $('#modal_add').hide();
             $('#modal_edit').show();
+
+            // 将要编辑的内容添加到编辑框中
+            var id = $(this).data('id');//获取当前元素的data-id的属性
+            $('#hidden').val(id);
+            var $tds = $(this).parents("tr").children();// 取出当前行中所有的td
+            $('#name').val($tds.eq(0).text());
+            $('#slug').val($tds.eq(1).text());
         });
+        // 提交编辑按钮点击操作
+        $('#modal_edit').on('click', function () {
+            // 3.1检测内容是否为空
+            // 3.2发送请求
+            $.ajax({
+                type: 'post',
+                url: 'http://localhost:8000/admin/category_edit',
+                data: $('form').serialize(),
+                success: function (res) {
+                    if (res.code == 200) {
+                        location.reload();
+                    } else { alert('编辑失败了') }
+                }
+            })
+        })
+        // 4.分类数据删除功能；
+        // 使用事件委托给删除按钮添加点击事件
+        $('#tbody').on('click', ".del", function () {
+            // 获取data-id属性
+            var id = $(this).data('id');
+            // 3调用接口发送id
+            $.ajax({
+                type: 'post',
+                url: 'http://localhost:8000/admin/category_delete',
+                data: {
+                    id: id
+                },
+                success: function (res) {
+                    // 检测响应的删除状态是否成功
+                    if (res.code === 200) {
+                        location.reload()
+                    }
+                }
+            })
+        })
+
+
+
+
+
+
     </script>
 
 
