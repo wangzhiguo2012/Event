@@ -129,6 +129,19 @@
 
             })
         })
+        // 用户信息展示
+        // 步骤
+        // 页面加载中直接请求用户信息
+        // 将请求页面展示在页面中即可
+        user.getUser({
+            success: function (data) {
+
+                //获取右侧和顶侧的img,进行头像设置
+                $('.user_info img,.user_center_link img').prop('src', data.user_pic);
+                $('.user_info span').text('欢迎' + data.nickname);
+
+            }
+        })
 
 
     </script>

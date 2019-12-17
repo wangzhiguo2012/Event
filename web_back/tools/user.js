@@ -36,5 +36,15 @@ var user = {
 
             }
         });
+    },
+    getUser: function (options) {
+        $.ajax({
+            url: GET_USER,
+            success: function (res) {
+                if (res.code == 200) {
+                    options.success(res.data)
+                }
+            }
+        })
     }
 };

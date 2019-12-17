@@ -14,3 +14,4 @@ var BASE_URL = 'http://localhost:8000';
 
 var LOGIN = BASE_URL + '/admin/login';
 var LOGOUT = BASE_URL + '/admin/logout'
+var GET_USER = BASE_URL + '/admin/getuser'
