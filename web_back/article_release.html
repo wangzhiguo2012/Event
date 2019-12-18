@@ -27,24 +27,24 @@
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章标题：</label>
                     <div class="col-sm-10">
-                        <input type="email" class="form-control" id="inputEmail3" placeholder="文章标题">
+                        <input type="email" class="form-control" id="inputEmail3" placeholder="文章标题" name="title">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputPassword3" class="col-sm-2 control-label">文章封面：</label>
                     <div class="col-sm-10">
-                        <input type="file" id="exampleInputFile">
+                        <input type="file" id="exampleInputFile" name="cover">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="inputEmail3" class="col-sm-2 control-label">文章类别：</label>
                     <div class="col-sm-4">
-                        <select class="form-control">
-                            <option>1</option>
+                        <select class="form-control" id="selCategory" name="type">
+                            <!-- <option>1</option>
                             <option>2</option>
-                            <option>3</option>
+                            <option>3</option>  
                             <option>4</option>
-                            <option>5</option>
+                            <option>5</option> -->
                         </select>
                     </div>
                 </div>
@@ -53,7 +53,8 @@
                     <div class="col-sm-4">
 
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="YYYY-MM-DD" id="dateinput">
+                            <input type="text" class="form-control" placeholder="YYYY-MM-DD" id="dateinput" name="date"
+                                readonly>
                             <span class="input-group-btn">
                                 <button class="btn btn-default" type="button"
                                     onclick="jeDate('#dateinput',{trigger:false,format: 'YYYY-MM-DD'})"><i
@@ -72,13 +73,62 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <button type="submit" class="btn btn-success">发布</button>
-                        <button type="submit" class="btn btn-default">存为草稿</button>
+                        <button type="button" class="btn btn-success" id="publish">发布</button>
+                        <button type="button" class="btn btn-default">存为草稿</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <!-- 引入config和article.js文件 -->
+    <script src="./tools/config.js"></script>
+    <script src="./tools/article.js"></script>
+    <!-- 引入模板引擎 -->
+    <script src="./js/template-web.js"></script>
+    <!-- 设置模板用于创建分类下拉菜单结构 -->
+    <script type="text/template" id="category">
+        {{each data val}}
+        <option value="{{val.id}}">{{val.name}}</option>
+        {{/each}}
+    </script>
+    <script>
+        article.getCate({
+            success: function (res) {
+                console.log(res);
+
+                $('#selCategory').html(template('category', res));
+            }
+        });
+
+        // 2.点击发布按钮
+        $('#publish').on('click', function () {
+            // 2.1进行内容检测,为空进行提示
+            // 2.2使用formdata进行表单处理(这里具有name的表单元素)
+            var fd = new FormDataa($('form'[0]));
+            // 2.3将富文本编辑器内容取出,添加到formdata中,设置state为已发布
+            fd.append('content', tinymce.activeEditor.getContent());
+            fd.append('state', '已发布'),
+                // 发送请求,进行新增操作
+                $.ajax({
+                    type: 'post',
+                    url: 'http://localhost:8000/admin/article_publish',
+                    data: fd,
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        // 3.1检测新增是否成功,成功后进行跳转,跳到列表页展示
+                        if (res.code === 201) {
+                            location.href = 'article_list.html'
+
+                        } else {
+                            alert('网络不好,请稍后再试')
+                        }
+                    }
+                });
+
+        });
+
+    </script>
 
 </body>
 
