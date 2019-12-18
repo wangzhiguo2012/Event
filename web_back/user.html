@@ -75,12 +75,15 @@
                     // 1.2将数据展示到内容中
                     // 遍历
                     $.each(res.data, function (k, ele) {
+                        console.log(k);
+
                         // 遍历得到的属性名, 和要设置的元素id相同(之前自己设置的id);
                         if (k === 'user_pic') {
                             $('#avatar').prop('src', ele);
                             return
                         }
                         $('#' + k).val(ele)
+
                     })
                 }
             }
@@ -131,7 +134,7 @@
 
         // 图片本地预览
         // 使用change事件监测用户的文件选择操作
-        // 通过url.createObjjectURL(进行本地图片斗志获取)
+        // 通过url.createObjectURL(进行本地图片斗志获取)
         //     url是window对象的属性
         //     用户在本地选择的图片地址是我们不可能提前知道的
         //     使用方式
@@ -141,13 +144,9 @@
 
         // 1.给文件域设置change事件
         $('#user_pic').on('change', function () {
-            // console.log($(this)[0].files[0]);
-            // console.log(URL.createObjectURL($(this)[0].files[0]));
-
-            var tempsrc = URL.createObjectURL($(this)[0].files[0]);
-            $('#avatar').prop('src', tempsrc)
+            var img = URL.createObjectURL($(this)[0].files[0]);
+            $('#avatar').prop('src', img)
         })
-
 
 
 
