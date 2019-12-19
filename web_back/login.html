@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="css/iconfont.css">
 
     <link rel="stylesheet" type="text/css" href="css/main.css">
+    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css">
 
 
 </head>
@@ -33,6 +34,25 @@
         </div>
 
     </div>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">提示信息</h4>
+                </div>
+                <div class="modal-body">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">阅</button>
+                    <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="./js/bootstrap/js/bootstrap.min.js"></script>
     <script src="./js/jquery-1.12.4.min.js"></script>
     <script src="./js/bootstrap/js/bootstrap.min.js"></script>
     <script src="./tools/config.js"></script>
@@ -48,14 +68,15 @@
         //     失败时提示错误
         var $input_txt = $('.input_txt');
         var $input_pass = $('.input_pass');
+        var $myModal = $('#myModal')
         // 给按钮设置点击事件
         $('.input_sub').on('click', function () {
             var username = $input_txt.val().trim()
             var password = $input_pass.val().trim()
             if (username === '' || password === '') {
-                alert("请输入正确的内容");
-                // // 2.将提示方法更改为模态框
-                // $myModal.modal('show').find('.modal-body').text('请填写完整的内容')
+                // alert("请输入正确的内容");
+                // 2.将提示方法更改为模态框
+                $myModal.modal('show').find('.modal-body').text('请完整填写登录内容!~');
                 return
 
             }
@@ -68,7 +89,7 @@
                     location.href = './index.html'
                 },
                 fail: function () {
-                    alert('用户名和密码输入错误吗')
+                    $myModal.modal('show').find('.modal-body').text('用户名或密码错误!~');
                 }
             });
         })

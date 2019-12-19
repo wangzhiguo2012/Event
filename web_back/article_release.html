@@ -74,7 +74,7 @@
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <button type="button" class="btn btn-success" id="publish">发布</button>
-                        <button type="button" class="btn btn-default">存为草稿</button>
+                        <button type="submit" class="btn btn-default">存为草稿</button>
                     </div>
                 </div>
             </form>
@@ -104,7 +104,7 @@
         $('#publish').on('click', function () {
             // 2.1进行内容检测,为空进行提示
             // 2.2使用formdata进行表单处理(这里具有name的表单元素)
-            var fd = new FormDataa($('form'[0]));
+            var fd = new FormData($('form')[0]);
             // 2.3将富文本编辑器内容取出,添加到formdata中,设置state为已发布
             fd.append('content', tinymce.activeEditor.getContent());
             fd.append('state', '已发布'),
@@ -116,6 +116,7 @@
                     contentType: false,
                     processData: false,
                     success: function (res) {
+
                         // 3.1检测新增是否成功,成功后进行跳转,跳到列表页展示
                         if (res.code === 201) {
                             location.href = 'article_list.html'
